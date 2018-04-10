@@ -1,19 +1,14 @@
 package com.nonexistentware.igorsinchuk.samplevideoplayer;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +18,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class Main extends Activity {
 	private Cursor videoCursor;
@@ -37,17 +31,16 @@ public class Main extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		videoGrid();
-		checkUserPermission();
+		videoGallery();
 	}
 
-	private void videoGrid() {
-		String[] proj = {MediaStore.Video.Media._ID,
+	private void videoGallery() {
+		String[] videoData = {MediaStore.Video.Media._ID,
 				MediaStore.Video.Media.DATA,
 				MediaStore.Video.Media.DISPLAY_NAME,
 				MediaStore.Video.Media.SIZE};
 		videoCursor = getContentResolver().query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-				proj, null, null, null);
+				videoData, null, null, null);
 		count = videoCursor.getCount();
 		videoList = (ListView) findViewById(R.id.PhoneVideoList);
 		videoList.setAdapter(new VideoAdapter(getApplicationContext()));
@@ -69,10 +62,10 @@ public class Main extends Activity {
 	};
 
 	public class VideoAdapter extends BaseAdapter {
-		private Context vContext;
+		private Context videoContext;
 
 		public VideoAdapter(Context context) {
-			vContext = context;
+			videoContext = context;
 		}
 
 		public int getCount() {
@@ -92,7 +85,7 @@ public class Main extends Activity {
 			String id = null;
 			convertView = null;
 			if (convertView == null) {
-				convertView = LayoutInflater.from(vContext).inflate(
+				convertView = LayoutInflater.from(videoContext).inflate(
 						R.layout.listitem, parent, false);
 				holder = new ViewHolder();
 				holder.txtTitle = (TextView) convertView
@@ -137,38 +130,6 @@ public class Main extends Activity {
 			return convertView;
 		}
 	}
-	// methods for check permission
-
-
-
-	private void checkUserPermission(){
-		if(Build.VERSION.SDK_INT>=23){
-			if(ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
-					!= PackageManager.PERMISSION_GRANTED){
-				requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},123);
-				return;
-			}
-		}
-
-	}
-
-	@Override
-	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-		switch (requestCode) {
-			case 123:
-				if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-					videoGrid();//
-				} else {
-					Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show();
-					checkUserPermission();
-				}
-				break;
-			default:
-				super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-		}
-	}
-
 	static class ViewHolder {
 
 		TextView txtTitle;
