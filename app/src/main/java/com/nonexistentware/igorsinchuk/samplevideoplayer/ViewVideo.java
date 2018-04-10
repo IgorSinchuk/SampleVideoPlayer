@@ -21,13 +21,15 @@ public class ViewVideo extends Activity {
 
       private String filename;
       VideoView videoView;
+      
       @Override
       public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            Intent play = getIntent();
-            Bundle extras = play.getExtras();
-            filename = extras.getString("VideoFile");
             setContentView(R.layout.activity_view);
+            
+            Intent intent = getIntent();
+            Bundle extras = intent.getExtras();
+            filename = extras.getString("VideoFile");
             videoView = (VideoView) findViewById(R.id.videoView);
             videoView.setVideoPath(filename);
             videoView.setMediaController(new MediaController(this));
