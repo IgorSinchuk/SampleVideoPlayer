@@ -100,8 +100,6 @@ public class Main extends Activity {
 				videoColumnIndex = videoCursor
 						.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE);
 				videoCursor.moveToPosition(position);
-				// id += " Size(KB):" +
-				// videoCursor.getString(videoColumnIndex);
 				holder.txtTitle.setText(id);
 
 				String[] proj = {MediaStore.Video.Media._ID,
